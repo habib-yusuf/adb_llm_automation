@@ -1,1 +1,3 @@
+Android SDK Platform Tools
 openai
+Python 3.9+
