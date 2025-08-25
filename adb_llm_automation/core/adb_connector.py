@@ -1,14 +1,14 @@
 from __future__ import annotations
 import subprocess
 from typing import List, Optional
-from .utils import ensure_adb_available
+from .utils import is_adb_available
 
 
 class ADBConnector:
     def __init__(self, device_id: Optional[str] = None, adb_path: str = "adb"):
         self.device_id = device_id
         self.adb_path = adb_path
-        ensure_adb_available()
+        is_adb_available()
 
     # --- internal helpers ---
     def _base_cmd(self) -> List[str]:
@@ -62,3 +62,15 @@ class ADBConnector:
 
     def battery(self) -> str:
         return self.shell("dumpsys battery")
+    
+    def run_command(self, command: str):
+        full_cmd = ["adb", "shell"] + command.split()
+        print(f"🔧 Running command: {' '.join(full_cmd)}")  # Debug print
+        result = subprocess.run(full_cmd, capture_output=True, text=True)
+        
+        if result.stdout.strip():
+            print("📤 STDOUT:", result.stdout.strip())
+        if result.stderr.strip():
+            print("⚠️ STDERR:", result.stderr.strip())
+        
+        return result
